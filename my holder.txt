@@ -1,0 +1,44 @@
+import tkinter as tk
+from tkinter import font
+from gpiozero import PWMLED
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
+
+led_blue = PWMLED(14)
+led_green = PWMLED(15)
+led_yellow = PWMLED(18)
+
+win = tk.Tk()
+win.title('LED Intensity Control')
+
+myFont = font.Font(family='Helvetica', size=12, weight='bold')
+
+def update_leds():
+    duty_cycle_blue = slider_blue.get() / 100.0
+    led_blue.value = duty_cycle_blue
+    duty_cycle_green = slider_green.get() / 100.0
+    led_green.value = duty_cycle_green
+    duty_cycle_yellow = slider_yellow.get() / 100.0
+    led_yellow.value = duty_cycle_yellow
+
+def close():
+    GPIO.cleanup()
+    win.destroy()
+
+slider_blue = tk.Scale(win, from_=0, to=100, orient=tk.HORIZONTAL, label='Blue LED Intensity', font=myFont)
+slider_blue.grid(row=0, column=0, padx=10, pady=5)
+
+slider_green = tk.Scale(win, from_=0, to=100, orient=tk.HORIZONTAL, label='Green LED Intensity', font=myFont)
+slider_green.grid(row=1, column=0, padx=10, pady=5)
+
+slider_yellow = tk.Scale(win, from_=0, to=100, orient=tk.HORIZONTAL, label='Yellow LED Intensity', font=myFont)
+slider_yellow.grid(row=2, column=0, padx=10, pady=5)
+
+updateButton = tk.Button(win, text='Update LED Intensity', font=myFont, command=update_leds, width=16)
+updateButton.grid(row=3, column=0, padx=10, pady=10)
+
+exitButton = tk.Button(win, text='Exit', font=myFont, command=close, bg='red', height=1, width=6)
+exitButton.grid(row=4, column=0, padx=10, pady=10)
+
+win.mainloop()
